@@ -68,6 +68,11 @@ void AGridPawn::MoveToCurrentTargetNode()
 		return;
 	}
 
+	/*const FVector Dir = TargetNode->GetActorLocation() - GetActorLocation();
+	FVector Location = GetActorLocation();
+	Location += Dir.GetSafeNormal() * (CurrentMovementSpeed * GetWorld()->GetDeltaSeconds());
+	SetActorLocation(Location);*/
+
 	const FVector2D StartVector = TheGridGen->GetTwoDOfVector(GetActorLocation());
 	const FVector2D EndVector = TheGridGen->GetTwoDOfVector(TargetNode->GetActorLocation());
 	const auto Pos = FMath::Vector2DInterpConstantTo(StartVector, EndVector, GetWorld()->GetDeltaSeconds(), CurrentMovementSpeed);
@@ -107,6 +112,24 @@ void AGridPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AGridPawn::HandleMovement();
+
+	/*TimeAccumulator += DeltaTime;
+	if (!LastInputDirection.IsZero() && TimeAccumulator > 0.18)
+	{
+		const FVector NewLocation = GetActorLocation() + (LastInputDirection  * 100 );
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Actor Position = %f  %f "), GetActorLocation().X, GetActorLocation().Y));
+		FVector2D currNode = TheGridGen->GetXYPositionByRelativeLocation(NewLocation);
+		if (GameMode->GField->IsNodeValidForWalk(TheGridGen->TileMap[currNode]))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, FString::Printf(TEXT("Position %f  %f "), currNode.X, currNode.Y));
+			SetActorLocation(TheGridGen->TileMap[currNode]->GetTileCoordinates());
+			TimeAccumulator = 0;
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Position %f  %f "), currNode.X, currNode.Y));
+		}
+	}*/
 
 }
 

@@ -2,4 +2,9 @@
 
 
 #include "GridPlayerController.h"
+AGridPlayerController::AGridPlayerController()
+{
+	bShowMouseCursor = true;
+}
+
 

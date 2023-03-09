@@ -14,4 +14,6 @@ class PACMANGRID_API AGridPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+	AGridPlayerController();
+	
 };
