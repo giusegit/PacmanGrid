@@ -22,6 +22,9 @@ private:
 		TSubclassOf<AGridBaseNode> PointNode;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Nodes")
+		TSubclassOf<AGridBaseNode> LabyrinthNode;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Nodes")
 		TSubclassOf<AGridBaseNode> NullNode;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Nodes")
@@ -93,8 +96,6 @@ public:
 	FVector2D GetXYPositionByRelativeLocation(const FVector& Location);
 
 	FVector2D GetTwoDOfVector(FVector DDDVector);
-
-
 
 	static bool IsNodeValidForWalk(class AGridBaseNode* Node);
 	AGridBaseNode* GetNextNode(const FVector2D StartCoords, FVector InputDir);

@@ -4,7 +4,7 @@
 #include "GridGenerator.h"
 
 constexpr int MapSizeX = 30;
-// la y contiene 28 elementi (il for conta un elemento in meno)
+// la y contiene 28 elementi (+ il carattere di fine stringa)
 constexpr int MapSizeY = 29;
 
 // # - Wall
@@ -22,39 +22,6 @@ constexpr int MapSizeY = 29;
 // N - Ghost Area
 // I - Invisible Not Walkable
 // E - Ghost Exit
-
-//static char Map[MapSizeX][MapSizeY] = {
-//	"############################",
-//	"#            ##            #",
-//	"# #### ##### ## ##### #### #",
-//	"#B#### ##### ## ##### ####B#",
-//	"# #### ##### ## ##### #### #",
-//	"#              P           #",
-//	"# #### ## ######## ## #### #",
-//	"# #### ## ######## ## #### #",
-//	"#      ##    ##    ##      #",
-//	"###### ##### ## ##### ######",
-//	"###### ##### ## ##### ######",
-//	"###### ##          ## ######",
-//	"###### ## ######## ## ######",
-//	"###### ## #IIIIII# ## ######",
-//	"T         #IIIIII#         T",
-//	"###### ## #IIIIII# ## ######",
-//	"###### ## ###II### ## ######",
-//	"###### ## 12 RE 34 ## ######",
-//	"###### ## ######## ## ######",
-//	"###### ## ######## ## ######",
-//	"#            ##            #",
-//	"# #### ##### ## ##### #### #",
-//	"# #### ##### ## ##### #### #",
-//	"#B  ##                ##  B#",
-//	"### ## ## ######## ## ## ###",
-//	"#      ## ######## ##      #",
-//	"# #######    ##    ####### #",
-//	"# ########## ## ########## #",
-//	"#                          #",
-//	"############################",
-//};
 
 static char Map[MapSizeX][MapSizeY] = {
 	"############################",
@@ -74,7 +41,7 @@ static char Map[MapSizeX][MapSizeY] = {
 	"T         #IIIIII#         T",
 	"###### ## #IIIIII# ## ######",
 	"###### ## ###II### ## ######",
-	"###### ##    RE    ## ######",
+	"###### ## 12 RE 34 ## ######",
 	"###### ## ######## ## ######",
 	"###### ## ######## ## ######",
 	"#            ##            #",
@@ -201,7 +168,8 @@ AGridBaseNode* AGridGenerator::SpawnNodeActorById(char CharId, FVector Position)
 	}
 	else
 	{
-		ClassToSpawn = PointNode;
+		ClassToSpawn = LabyrinthNode;
+		// ClassToSpawn = PointNode;
 	}
 	Node = GetWorld()->SpawnActor<AGridBaseNode>(ClassToSpawn, Position, FRotator::ZeroRotator);
 	return Node;
