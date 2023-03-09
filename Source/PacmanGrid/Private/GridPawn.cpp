@@ -9,14 +9,19 @@
 // Sets default values
 AGridPawn::AGridPawn()
 {
+	//
+	// N.B il pawn viene spawnato automaticamente nella posizione del player start
+	// dato che il pawn di default è stato impostato nei setting come BP_GridPawn
+	//  
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//// Set this pawn to be controlled by the lowest-numbered player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
-	//// ettore di direzione zero così il pawn parte da fermo
+	//// vettore di direzione inizializzato con zero (il pawn non si muove allo start del gioco fino a che non
+	//   viene premuto uno dei tasti W-A-S-D )
 	LastInputDirection = FVector(0, 0, 0);
 	LastValidInputDirection = FVector(0, 0, 0);
-	////posizione del pawn iniziale
+	////posizione iniziale  del pawn nelle coordinate di griglia (1,1)
 	CurrentGridCoords = FVector2D(1, 1);
 	//// nodi
 	LastNode = nullptr;
@@ -31,9 +36,16 @@ void AGridPawn::BeginPlay()
 	Super::BeginPlay();
 	GameMode = (ATestGridGameMode*)(GetWorld()->GetAuthGameMode());
 	TheGridGen = GameMode->GField;
-	//// posizione iniziale del pawn
+	//// posizione iniziale del pawn (è quella del PlayerStart)
 	FVector2D StartNode = TheGridGen->GetXYPositionByRelativeLocation(GetActorLocation());
 	LastNode = TheGridGen->TileMap[StartNode];
+}
+
+// Called every frame
+void AGridPawn::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	AGridPawn::HandleMovement();
 }
 
 void AGridPawn::HandleMovement()
@@ -47,7 +59,7 @@ void AGridPawn::HandleMovement()
 			SetNextNode(nullptr);
 		}
 	}
-	// si muove autonomamente fino a che il next node è walkable
+	// questo codice fa si che il pawn si muova autonomamente fino a che il next node è walkable
 	if (!TargetNode && !NextNode)
 	{
 		if (TheGridGen->IsNodeValidForWalk(TheGridGen->GetNextNode(CurrentGridCoords, LastInputDirection)))
@@ -67,7 +79,7 @@ void AGridPawn::MoveToCurrentTargetNode()
 		OnNodeReached();
 		return;
 	}
-
+	// funzione di interpolazione che fa muovere il pawn verso una nuova posizione data la posizione corrente
 	const FVector2D StartVector = TheGridGen->GetTwoDOfVector(GetActorLocation());
 	const FVector2D EndVector = TheGridGen->GetTwoDOfVector(TargetNode->GetActorLocation());
 	const auto Pos = FMath::Vector2DInterpConstantTo(StartVector, EndVector, GetWorld()->GetDeltaSeconds(), CurrentMovementSpeed);
@@ -101,26 +113,6 @@ void AGridPawn::SetNodeGeneric(const FVector Dir)
 	}
 }
 
-// Called every frame
-void AGridPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	AGridPawn::HandleMovement();
-
-}
-
-// Called to bind functionality to input
-void AGridPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	//Bind Actions here
-	InputComponent->BindAxis(TEXT("MoveForward"), this, &AGridPawn::SetVerticalInput);
-	InputComponent->BindAxis(TEXT("MoveRight"), this, &AGridPawn::SetHorizontalInput);
-	// bind the OnClick function to InputComponent for test purpose
-	InputComponent->BindAction("Click", IE_Pressed, this, &AGridPawn::OnClick);
-}
-
 void AGridPawn::OnClick()
 {
 	FHitResult Hit = FHitResult(ForceInit);
@@ -135,8 +127,6 @@ void AGridPawn::OnClick()
 
 void AGridPawn::SetVerticalInput(float AxisValue)
 {
-	//LastInputDirection.X = FMath::Clamp(AxisValue, -1.0f, 1.0f);
-
 	if (AxisValue == 0) return;
 	const FVector Dir = (GetActorForwardVector() * AxisValue).GetSafeNormal();
 	LastInputDirection = Dir.GetSafeNormal();
@@ -145,8 +135,6 @@ void AGridPawn::SetVerticalInput(float AxisValue)
 
 void AGridPawn::SetHorizontalInput(float AxisValue)
 {
-	//LastInputDirection.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f);
-
 	if (AxisValue == 0) return;
 	const FVector Dir = (GetActorRightVector() * AxisValue).GetSafeNormal();
 	LastInputDirection = Dir;

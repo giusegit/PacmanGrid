@@ -19,17 +19,11 @@ class PACMANGRID_API ATestGridGameMode : public AGameMode
 public:
 	// TSubclassOf is a template class that provides UClass type safety.
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<AGridGenerator> GridGeneratorClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		TSubclassOf<AGridPawn> GridPawnClass;
+	TSubclassOf<AGridGenerator> GridGeneratorClass;
 
 	// reference to a GameField object
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		AGridGenerator* GField;
-
-	UPROPERTY(VisibleAnywhere)
-		AGridPawn* MyPawn;
+	AGridGenerator* GField;
 
 	ATestGridGameMode();
 

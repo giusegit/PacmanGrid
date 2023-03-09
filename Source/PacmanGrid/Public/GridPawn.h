@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GridBaseNode.h"
+#include "GridGenerator.h"
 #include "GameFramework/Pawn.h"
 #include "GridPawn.generated.h"
 
@@ -13,15 +14,14 @@ class PACMANGRID_API AGridPawn : public APawn
 	GENERATED_BODY()
 
 public:
-
-public:
 	// Sets default values for this pawn's properties
 	AGridPawn();
 	void SetVerticalInput(float AxisValue);
 	void SetHorizontalInput(float AxisValue);
 
 	UFUNCTION(BlueprintCallable)
-		void SetNextNodeByDir(FVector InputDir);
+	void SetNextNodeByDir(FVector InputDir);
+
 	FVector GetLastValidDirection() const;
 
 protected:
@@ -29,34 +29,32 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
-		FVector LastInputDirection;
+	FVector LastInputDirection;
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
-		FVector LastValidInputDirection;
+	FVector LastValidInputDirection;
 
 	void SetLastValidDirection(FVector Dir);
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-		float CurrentMovementSpeed = 100.0f;
+	float CurrentMovementSpeed = 100.0f;
 	UPROPERTY(EditAnywhere)
-		float AcceptedDistance = 4.f;
-	UPROPERTY(VisibleAnywhere)
-		FVector2D CurrentGridCoords;
-	UPROPERTY()
-		float TimeAccumulator;
+	float AcceptedDistance = 4.f;
 
 	UPROPERTY(VisibleAnywhere)
-		class ATestGridGameMode* GameMode;
+	FVector2D CurrentGridCoords;
 
-	// reference to a GameField object
 	UPROPERTY(VisibleAnywhere)
-		class AGridGenerator* TheGridGen;
+	class ATestGridGameMode* GameMode;
+
+	UPROPERTY(VisibleAnywhere)
+	AGridGenerator* TheGridGen;
 
 	UPROPERTY(VisibleAnywhere, Category = "Nodes")
-		AGridBaseNode* NextNode;
+	AGridBaseNode* NextNode;
 	UPROPERTY(VisibleAnywhere, Category = "Nodes")
-		AGridBaseNode* TargetNode;
+	AGridBaseNode* TargetNode;
 	UPROPERTY(VisibleAnywhere, Category = "Nodes")
-		AGridBaseNode* LastNode;
+	AGridBaseNode* LastNode;
 
 	void HandleMovement();
 	void OnNodeReached();
@@ -69,11 +67,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	// called on left mouse click (binding)
 	UFUNCTION()
-		void OnClick();
+	void OnClick();
 
 };

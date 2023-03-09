@@ -61,8 +61,6 @@ public:
 	// Sets default values for this actor's properties
 	AGridGenerator();
 
-
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -78,7 +76,7 @@ public:
 
 	// tile size
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		float TileSize;
+	float TileSize;
 
 	UPROPERTY(VisibleAnywhere)
 		TArray<AGridBaseNode*> Grid;
@@ -98,6 +96,7 @@ public:
 	FVector2D GetTwoDOfVector(FVector DDDVector);
 
 	static bool IsNodeValidForWalk(class AGridBaseNode* Node);
+
 	AGridBaseNode* GetNextNode(const FVector2D StartCoords, FVector InputDir);
 
 private:
@@ -105,7 +104,7 @@ private:
 	AGridBaseNode* SpawnNodeActorById(char CharId, FVector Position) const;
 
 	UPROPERTY(EditDefaultsOnly)
-		FVector SpawnOffset = FVector(100.f);
+		FVector SpawnOffset;
 
 	void GenerateGrid();
 

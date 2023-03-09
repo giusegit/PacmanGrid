@@ -61,9 +61,8 @@ AGridGenerator::AGridGenerator()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	TileSize = 100;
-
-
+	TileSize = 100.0f;
+	SpawnOffset = FVector(TileSize);
 }
 
 // Called when the game starts or when spawned
@@ -71,14 +70,12 @@ void AGridGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 	GenerateGrid();
-
 }
 
 // Called every frame
 void AGridGenerator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 TMap<FVector2D, AGridBaseNode*> AGridGenerator::GetTileMAp()
@@ -95,13 +92,15 @@ void AGridGenerator::GenerateGrid()
 			const char MapTile = Map[x][y];
 
 			FVector OffsetVector(x * SpawnOffset.X, y * SpawnOffset.Y, 0);
+			// imposto le coordinate spaziali per la funzione di spawn della tile
 			const FVector CurrentSpawnPosition = GetActorLocation() + OffsetVector;
-
+			// questa funzione spawna una nuova tile
 			const auto SpawnedNode = SpawnNodeActorById(MapTile, CurrentSpawnPosition);
-
+			// assegna le coordinate di griglia alla tile
 			SpawnedNode->TileGridPosition = (FVector2D(x, y));
+			// assegna le coordinate spaziali alla tile
 			SpawnedNode->TileCoordinatesPosition = CurrentSpawnPosition;
-
+			// aggiungo alle strutture dati il riferimento alla tile creata
 			Grid.Add(SpawnedNode);
 			TileMap.Add(FVector2D(x, y), SpawnedNode);
 		}
@@ -168,6 +167,8 @@ AGridBaseNode* AGridGenerator::SpawnNodeActorById(char CharId, FVector Position)
 	}
 	else
 	{
+		// ho creato un nuovo nodo per la visualizzazione del percorso
+		// da sostituire eventualmente con un "pallino"  rappresentante il cibo"
 		ClassToSpawn = LabyrinthNode;
 		// ClassToSpawn = PointNode;
 	}
@@ -189,7 +190,7 @@ AGridBaseNode* AGridGenerator::GetNextNode(const FVector2D StartCoords, FVector 
 
 	const float RequestedX = StartCoords.X + InputDir.X;
 	const float RequestedY = StartCoords.Y + InputDir.Y;
-	// ritorna un numero compreso tra min e max se nel range
+	// la funzione clamp ritorna un numero compreso tra min e max se nel range
 	//se più piccolo del min ritorna il min
 	//se più grande del max ritorna il max
 	const float ClampedX = FMath::Clamp(RequestedX, 0.f, MapSizeX - 1);
